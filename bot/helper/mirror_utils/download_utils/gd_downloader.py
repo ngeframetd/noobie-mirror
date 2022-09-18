@@ -27,7 +27,7 @@ def add_gd_download(link, path, listener, newname, gdrive_sharer):
         if gname is not None:
             cap, f_name = GoogleDriveHelper().drive_list(gname, True)
             if cap:
-                dupmsg = f"⚠️ {listener.tag} Download kamu dihentikan karena: <code>{gname}</code> <b><u>sudah ada di Drive</u></b>"
+                dupmsg = f"{listener.tag} Your download was stopped because: <code>{gname}</code> <b><u>already in Drive</u></b>"
                 sendFile(listener.bot, listener.message, f_name, dupmsg)
                 return
     if any([ZIP_UNZIP_LIMIT, TORRENT_DIRECT_LIMIT]):
@@ -42,7 +42,7 @@ def add_gd_download(link, path, listener, newname, gdrive_sharer):
         if limit is not None:
             LOGGER.info('Checking File/Folder Size...')
             if size > limit * 1024**3:
-                msg = f'⚠️ {listener.tag} {mssg}.\nUkuran File/Folder kamu adalah {get_readable_file_size(size)}.'
+                msg = f'{listener.tag} {mssg}.\nYour File/Folder Size is {get_readable_file_size(size)}.'
                 return sendMessage(msg, listener.bot, listener.message)
     LOGGER.info(f"Download Name: {name}")
     drive = GoogleDriveHelper(name, path, size, listener)
