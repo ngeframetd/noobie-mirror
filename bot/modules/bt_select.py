@@ -15,7 +15,7 @@ def select(update, context):
         gid = context.args[0]
         dl = getDownloadByGid(gid)
         if not dl:
-            sendMessage(f"⚠️ {tag} GID: <code>{gid}</code> Tidak Ditemukan.", context.bot, update.message)
+            sendMessage(f"GID: <code>{gid}</code> Not Found.", context.bot, update.message)
             return
     elif update.message.reply_to_message:
         mirror_message = update.message.reply_to_message
@@ -25,27 +25,27 @@ def select(update, context):
             else:
                 dl = None
         if not dl:
-            sendMessage(f"⚠️ {tag} Task ini sudah tidak aktif!", context.bot, update.message)
+            sendMessage(f"This is not an active task!", context.bot, update.message)
             return
     elif len(context.args) == 0:
-        msg = "Balas perintah aktif yang digunakan untuk memulai bt-download atau menambahkan ID Download bersama dengan perintah ini\n\n"
-        msg += "Perintah ini terutama untuk pemilihan jika Kamu memutuskan untuk memilih file dari torrent yang sudah ditambahkan, "
-        msg += "Tetapi kamu juga dapat menggunakan perintah dengan arg `s` untuk memilih file sebelum download dimulai."
+        msg = "Reply to an active /cmd which was used to start the qb-download or add gid along with cmd\n\n"
+        msg += "This command mainly for selection incase you decided to select files from already added torrent. "
+        msg += "But you can always use /cmd with arg `s` to select files before download start."
         smsg = sendMessage(msg, context.bot, update.message)
         Thread(target=auto_delete_message, args=(context.bot, update.message, smsg)).start()
         return
 
     if OWNER_ID != user_id and dl.message.from_user.id != user_id and user_id not in SUDO_USERS:
-        tmsg = sendMessage(f"⚠️ {tag} Task ini bukan buat elu!", context.bot, update.message)
+        tmsg = sendMessage(f"This task is not for you!", context.bot, update.message)
         Thread(target=auto_delete_message, args=(context.bot, update.message, tmsg)).start()
         return
 
     if dl.status() not in [MirrorStatus.STATUS_DOWNLOADING, MirrorStatus.STATUS_PAUSED, MirrorStatus.STATUS_WAITING]:
-        tmsg = sendMessage(f"⚠️ {tag} Task harus dalam status downloading atau paused!", context.bot, update.message)
+        tmsg = sendMessage(f"Task should be in download or pause (incase message deleted by wrong) or queued (status incase you used torrent file)!", context.bot, update.message)
         Thread(target=auto_delete_message, args=(context.bot, update.message, tmsg)).start()
         return
     if dl.name().startswith('[METADATA]'):
-        tmsg = sendMessage(f"⚠️ {tag} Coba lagi setelah downloading METADATA selesai!", context.bot, update.message)
+        tmsg = sendMessage(f"Try after downloading metadata finished!", context.bot, update.message)
         Thread(target=auto_delete_message, args=(context.bot, update.message, tmsg)).start()
         return
     try:
@@ -59,12 +59,12 @@ def select(update, context):
             aria2.client.force_pause(id_)
         listener.select = True
     except:
-        tmsg = sendMessage(f"⚠️ {tag} Task ini bukan torrent!", context.bot, update.message)
+        tmsg = sendMessage(f"This is not a bittorrent task!", context.bot, update.message)
         Thread(target=auto_delete_message, args=(context.bot, update.message, tmsg)).start()
         return
 
     SBUTTONS = bt_selection_buttons(id_)
-    msg = f"⛔️ {tag} Download kamu dijeda. Silahkan pilih file kemudian klik Selesai Memilih untuk memulai qb-download."
+    msg = f"Your download paused. Choose files then press Done Selecting button to resume downloading."
     sendMarkup(msg, context.bot, update.message, SBUTTONS)
 
 def get_confirm(update, context):
@@ -74,17 +74,17 @@ def get_confirm(update, context):
     data = data.split()
     dl = getDownloadByGid(data[2])
     if not dl:
-        query.answer(text="Task ini telah dibatalkan!", show_alert=True)
+        query.answer(text="This task has been cancelled!", show_alert=True)
         query.message.delete()
         return
     if hasattr(dl, 'listener'):
         listener = dl.listener()
     else:
-        query.answer(text="Not in download status anymore!", show_alert=True)
+        query.answer(text="Not in download state anymore! Keep this message to resume the seed if seed enabled!", show_alert=True)
         query.message.delete()
         return
     if user_id != listener.message.from_user.id:
-        query.answer(text="Task ini bukan buat elu!", show_alert=True)
+        query.answer(text="This task is not for you!", show_alert=True)
     elif data[1] == "pin":
         query.answer(text=data[3], show_alert=True)
     elif data[1] == "done":
