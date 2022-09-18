@@ -71,7 +71,6 @@ def _ytdl(bot, message, isZip=False, isLeech=False):
             tag = reply_to.from_user.mention_html(reply_to.from_user.first_name)
 
     if not is_url(link):
-        help_msg = f"ℹ️ {tag} Tidak ada link video yang mau di-mirror. Lihat format dibawah!"
         help_msg += "\n<code>/command</code> {link} |newname pswd: mypassword [zip] opt: x:y|x1:y1"
         help_msg += "\n\n<b>Opt Example:</b> opt: playliststart:^10|match_filter:season_number=18|matchtitle:S1"
         help_msg += "\n\n<b>NOTE:</b> Add `^` before integer, some values must be integer and some string."
@@ -84,7 +83,7 @@ def _ytdl(bot, message, isZip=False, isLeech=False):
 
 
     if multi == 0:
-        check_ = sendMessage(f"ℹ️ {tag} Sedang memeriksa link, Tunggu sebentar...", bot, message)
+        check_ = sendMessage(f"{tag} Checking link", bot, message)
     else: check_ = None
 
     listener = MirrorLeechListener(bot, message, isZip, isLeech=isLeech, pswd=pswd, tag=tag)
@@ -100,7 +99,7 @@ def _ytdl(bot, message, isZip=False, isLeech=False):
         if check_ != None:
             deleteMessage(bot, check_)
         msg = str(e).replace('<', ' ').replace('>', ' ').replace(';','').split('please report this issue on')[0]
-        return sendMessage(f"⚠️ {tag} {msg.strip()}", bot, message)
+        return sendMessage(f"{tag} {msg.strip()}", bot, message)
     if 'entries' in result:
         for i in ['144', '240', '360', '480', '720', '1080', '1440', '2160']:
             video_format = f"bv*[height<={i}][ext=mp4]+ba[ext=m4a]/b[height<={i}]"
@@ -113,7 +112,7 @@ def _ytdl(bot, message, isZip=False, isLeech=False):
         buttons.sbutton("Cancel", f"qu {msg_id} cancel")
         YTBUTTONS = buttons.build_menu(3)
         listener_dict[msg_id] = [listener, user_id, link, name, YTBUTTONS, opt]
-        bmsg = sendMarkup(f'ℹ️ {tag} Pilih Kualitas Playlist Video:', bot, message, YTBUTTONS)
+        bmsg = sendMarkup(f'{tag} Choose Playlist Videos Quality:', bot, message, YTBUTTONS)
     else:
         formats = result.get('formats')
         formats_dict = {}
@@ -164,7 +163,7 @@ def _ytdl(bot, message, isZip=False, isLeech=False):
         buttons.sbutton("Cancel", f"qu {msg_id} cancel")
         YTBUTTONS = buttons.build_menu(2)
         listener_dict[msg_id] = [listener, user_id, link, name, YTBUTTONS, opt, formats_dict]
-        bmsg = sendMarkup(f'ℹ️ {tag} Pilih Kualitas Video:', bot, message, YTBUTTONS)
+        bmsg = sendMarkup(f'{tag} Choose Video Quality:', bot, message, YTBUTTONS)
 
     Thread(target=_auto_cancel, args=(bmsg, msg_id)).start()
     if multi > 1:
@@ -187,7 +186,7 @@ def _qual_subbuttons(task_id, b_name, msg):
     buttons.sbutton("Back", f"qu {task_id} back")
     buttons.sbutton("Cancel", f"qu {task_id} cancel")
     SUBBUTTONS = buttons.build_menu(2)
-    editMessage(f"Pilih Bitrate untuk <b>{b_name}</b>:", msg, SUBBUTTONS)
+    editMessage(f"Choose Bit rate for <b>{b_name}</b>:", msg, SUBBUTTONS)
 
 def _mp3_subbuttons(task_id, msg, playlist=False):
     buttons = button_build.ButtonMaker()
@@ -203,7 +202,7 @@ def _mp3_subbuttons(task_id, msg, playlist=False):
     buttons.sbutton("Back", f"qu {task_id} back")
     buttons.sbutton("Cancel", f"qu {task_id} cancel")
     SUBBUTTONS = buttons.build_menu(2)
-    editMessage(f"Pilih Audio{i} Bitrate:", msg, SUBBUTTONS)
+    editMessage(f"Choose Audio{i} Bitrate:", msg, SUBBUTTONS)
 
 def select_format(update, context):
     query = update.callback_query
@@ -215,10 +214,10 @@ def select_format(update, context):
     try:
         task_info = listener_dict[task_id]
     except:
-        return editMessage("Itu adalah task lama", msg)
+        return editMessage("This is an old task", msg)
     uid = task_info[1]
     if user_id != uid and not CustomFilters._owner_query(user_id):
-        return query.answer(text="Bukan buat elu!", show_alert=True)
+        return query.answer(text="This task is not for you!", show_alert=True)
     elif data[2] == "dict":
         query.answer()
         b_name = data[3]
@@ -226,7 +225,7 @@ def select_format(update, context):
         return
     elif data[2] == "back":
         query.answer()
-        return editMessage('Pilih Kualitas Video:', msg, task_info[4])
+        return editMessage('Choose Video Quality:', msg, task_info[4])
     elif data[2] == "mp3":
         query.answer()
         if len(data) == 4:
@@ -261,7 +260,7 @@ def _auto_cancel(msg, msg_id):
     sleep(120)
     try:
         del listener_dict[msg_id]
-        editMessage('Timed out! Task telah dibatalkan.', msg)
+        editMessage('Timed out! Task has been cancelled.', msg)
     except:
         pass
 
