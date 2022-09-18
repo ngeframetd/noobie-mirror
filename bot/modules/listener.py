@@ -218,18 +218,18 @@ class MirrorLeechListener:
         if not self.isPrivate and INCOMPLETE_TASK_NOTIFIER and DB_URI is not None:
             DbManger().rm_complete_task(self.message.link)
         reply_to = self.message.reply_to_message
-        msg = f'📁 <b>Nama: </b><code>{escape(name)}</code>\n'
-        msg += f'📦 <b>Ukuran: </b>{size}\n'
+        msg = f'<b>Name: </b><code>{escape(name)}</code>\n'
+        msg += f'<b>Size: </b>{size}\n'
         if self.isLeech:
-            msg += f'📄 <b>Total Files: </b>{folders}\n'
+            msg += f'<b>Total Files: </b>{folders}\n'
             if typ != 0:
-                msg += f'🧩 <b>Corrupted Files: </b>{typ}\n'
-            msg += f'⏱ <b>Selesai Dalam: </b>{get_readable_time(time() - self.message.date.timestamp())}\n\n'
-            msg += f'👤 <b>Leecher: </b>{self.tag}\n'
+                msg += f'<b>Corrupted Files: </b>{typ}\n'
+            msg += f'<b>Finished in: </b>{get_readable_time(time() - self.message.date.timestamp())}\n\n'
+            msg += f'<b>Leecher: </b>{self.tag}\n'
             if not reply_to or reply_to.from_user.is_bot:
-                msg += f'#️⃣ <b>UID: </b><code>{self.message.from_user.id}</code>\n\n'
+                msg += f'<b>UID: </b><code>{self.message.from_user.id}</code>\n\n'
             else:
-                msg += f'#️⃣ <b>UID: </b><code>{reply_to.from_user.id}</code>\n\n'
+                msg += f'<b>UID: </b><code>{reply_to.from_user.id}</code>\n\n'
             if not files:
                 sendMessage(msg, self.bot, self.message)
             else:
@@ -249,14 +249,14 @@ class MirrorLeechListener:
         else:
             msg += f'🏷 <b>Type: </b>{typ}\n'
             if typ == "Folder":
-                msg += f'📂 <b>SubFolders: </b>{folders}\n'
-                msg += f'📄 <b>Files: </b>{files}\n'
-            msg += f'⏱ <b>Selesai Dalam: </b>{get_readable_time(time() - self.message.date.timestamp())}\n\n'
-            msg += f'👤 <b>Pemirror: </b>{self.tag}\n'
+                msg += f'<b>SubFolders: </b>{folders}\n'
+                msg += f'<b>Files: </b>{files}\n'
+            msg += f'<b>Finished in: </b>{get_readable_time(time() - self.message.date.timestamp())}\n\n'
+            msg += f'<b>cc: </b>{self.tag}\n'
             if not reply_to or reply_to.from_user.is_bot:
-                msg += f'#️⃣ <b>UID: </b><code>{self.message.from_user.id}</code>'
+                msg += f'<b>UID: </b><code>{self.message.from_user.id}</code>'
             else:
-                msg += f'#️⃣ <b>UID: </b><code>{reply_to.from_user.id}</code>'
+                msg += f'<b>UID: </b><code>{reply_to.from_user.id}</code>'
             buttons = ButtonMaker()
             link = short_url(link)
             buttons.buildbutton("☁️ Drive Link", link)
@@ -310,7 +310,7 @@ class MirrorLeechListener:
             except Exception as e:
                 LOGGER.error(str(e))
             count = len(download_dict)
-        msg = f"⚠️ {self.tag} Download kamu dihentikan karena: {error}"
+        msg = f"{self.tag} Your download has been stopped due to: {error}"
         if listfile == None:
             sendMessage(msg, self.bot, self.message)
         else:
@@ -334,7 +334,7 @@ class MirrorLeechListener:
             except Exception as e:
                 LOGGER.error(str(e))
             count = len(download_dict)
-        sendMessage(f"⚠️ {self.tag} {e_str}", self.bot, self.message)
+        sendMessage(f"{self.tag} {e_str}", self.bot, self.message)
         if count == 0:
             self.clean()
         else:
