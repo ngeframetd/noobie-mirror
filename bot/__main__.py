@@ -22,24 +22,26 @@ from .modules import authorize, list, cancel_mirror, mirror_status, mirror_leech
 def stats(update, context):
     botVersion = check_output(["git log -1 --date=format:v%Y.%m.%d --pretty=format:%cd"], shell=True).decode()
     currentTime = get_readable_time(time() - botStartTime)
-    total, used, free, disk= disk_usage('/')
-    total = get_readable_file_size(total)
-    used = get_readable_file_size(used)
-    free = get_readable_file_size(free)
-    sent = get_readable_file_size(net_io_counters().bytes_sent)
-    recv = get_readable_file_size(net_io_counters().bytes_recv)
-    cpuUsage = cpu_percent(interval=0.5)
+    total, used, free, disk = disk_usage('/')
+    swap = swap_memory()
     memory = virtual_memory()
-    mem_p = memory.percent
-    stats = f'<b>Bot Uptime:</b> {currentTime}\n\n'\
-            f'<b>Total Disk Space:</b> {total}\n'\
-            f'<b>Used:</b> {used}\n'\
-            f'<b>Free:</b> {free}\n\n'\
-            f'<b>Upload:</b> {sent}\n'\
-            f'<b>Download:</b> {recv}\n'\
-            f'<b>CPU:</b> {cpuUsage}%\n'\
-            f'<b>RAM:</b> {mem_p}%\n\n'\
-            f'<b>Bot Version:</b> {botVersion}'
+    stats = f'<b>Bot Version:</b> {botVersion}\n'
+            f'<b>Commit Date:</b> {last_commit}\n\n'\
+            f'<b>Bot Uptime:</b> {get_readable_time(time() - botStartTime)}\n'\
+            f'<b>OS Uptime:</b> {get_readable_time(time() - boot_time())}\n\n'\
+            f'<b>Total Disk Space:</b> {get_readable_file_size(total)}\n'\
+            f'<b>Used:</b> {get_readable_file_size(used)} | <b>Free:</b> {get_readable_file_size(free)}\n\n'\
+            f'<b>Upload:</b> {get_readable_file_size(net_io_counters().bytes_sent)}\n'\
+            f'<b>Download:</b> {get_readable_file_size(net_io_counters().bytes_recv)}\n\n'\
+            f'<b>CPU:</b> {cpu_percent(interval=0.5)}%\n'\
+            f'<b>RAM:</b> {memory.percent}%\n'\
+            f'<b>DISK:</b> {disk}%\n\n'\
+            f'<b>Physical Cores:</b> {cpu_count(logical=False)}\n'\
+            f'<b>Total Cores:</b> {cpu_count(logical=True)}\n\n'\
+            f'<b>SWAP:</b> {get_readable_file_size(swap.total)} | <b>Used:</b> {swap.percent}%\n'\
+            f'<b>Memory Total:</b> {get_readable_file_size(memory.total)}\n'\
+            f'<b>Memory Free:</b> {get_readable_file_size(memory.available)}\n'\
+            f'<b>Memory Used:</b> {get_readable_file_size(memory.used)}'
     smsg = sendMessage(stats, context.bot, update.message)
     Thread(target=auto_delete_message, args=(context.bot, update.message, smsg)).start()
 
