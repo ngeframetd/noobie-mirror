@@ -135,7 +135,7 @@ def get_readable_message():
             else:
                 tag = f"<code>{reply_to.from_user.first_name}</code> (<code>{reply_to.from_user.id}</code>)"
             ### AKHIR CUSTOM STATUS ###
-            msg += f"<code>{escape(str(download.name()))}</code>"
+            msg += f"<b>Name:</b> <code>{escape(str(download.name()))}</code>"
             msg += f"\n<b>Status:</b> <a href=\"{pemirror.link}\"><i>{download.status()}</i></a>"
             if download.status() != MirrorStatus.STATUS_SEEDING:
                 msg += f"\n{get_progress_bar_string(download)} {download.progress()}"
