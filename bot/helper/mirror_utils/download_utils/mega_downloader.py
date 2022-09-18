@@ -119,7 +119,7 @@ class MegaDownloader:
             if mname is not None:
                 cap, f_name = GoogleDriveHelper().drive_list(mname, True)
                 if cap:
-                    dupmsg = f"⚠️ {self.__listener.tag} <code>{mname}</code> <b><u>sudah ada di Drive</u></b>"
+                    dupmsg = f"{self.__listener.tag} <code>{mname}</code> <b><u>already in Drive</u></b>"
                     sendFile(self.__listener.bot, self.__listener.message, f_name, dupmsg)
                     return
         if any([ZIP_UNZIP_LIMIT, MEGA_LIMIT]):
