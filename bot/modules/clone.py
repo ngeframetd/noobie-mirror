@@ -39,7 +39,7 @@ def _clone(message, bot):
             else:
                 tag = reply_to.from_user.mention_html(reply_to.from_user.first_name)
     if multi == 0:
-        _msg = sendMessage(f"♻️ {tag} Cloning: <code>{link}</code>", bot, message)
+        _msg = sendMessage(f"Cloning: <code>{link}</code>", bot, message)
     else: _msg = None
     try:
         if is_gdtot := is_gdtot_link(link):
@@ -54,21 +54,21 @@ def _clone(message, bot):
     except DirectDownloadLinkException as e:
         if _msg:
             deleteMessage(bot, _msg)
-        return sendMessage(f"⚠️ {tag} {e}", bot, message)
+        return sendMessage(f"{tag} {e}", bot, message)
     if is_gdrive_link(link):
         gd = GoogleDriveHelper()
         res, size, name, files = gd.helper(link)
         if res != "":
             if _msg:
                 deleteMessage(bot, _msg)
-            return sendMessage(f"⚠️ {tag} {res}", bot, message)
+            return sendMessage(f"{tag} {res}", bot, message)
         if STOP_DUPLICATE:
             LOGGER.info('Checking File/Folder if already in Drive...')
             cap, f_name = gd.drive_list(name, True, True)
             if cap:
                 if _msg:
                     deleteMessage(bot, _msg)
-                dupmsg = f"⚠️ {tag} Download kamu dihentikan karena: <code>{name}</code> <b><u>sudah ada di Drive</u></b>"
+                dupmsg = f"Your download was stopped because: <code>{name}</code> <b><u>already in Drive</u></b>"
                 sendFile(bot, message, f_name, dupmsg)
                 return
         if CLONE_LIMIT is not None:
@@ -76,7 +76,7 @@ def _clone(message, bot):
             if size > CLONE_LIMIT * 1024**3:
                 if _msg:
                     deleteMessage(bot, _msg)
-                msg2 = f'⚠️ {tag} Gagal, Clone limit adalah {CLONE_LIMIT}GB.\nUkuran File/Folder kamu adalah {get_readable_file_size(size)}.'
+                msg2 = f'Failed, clone limit is {CLONE_LIMIT}GB.\nYour File/Folder Size is {get_readable_file_size(size)}.'
                 return sendMessage(msg2, bot, message)
         if multi > 1:
             sleep(4)
