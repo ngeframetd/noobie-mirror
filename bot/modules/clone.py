@@ -112,7 +112,7 @@ def _clone(message, bot):
         if _msg:
             deleteMessage(bot, _msg)
         cc = f'\n\n<b>Time:</b> {get_readable_time(time() - message.date.timestamp())}'
-        cc += f'\n\n: </b>{tag}'
+        cc += f'\n\n<b>cc:</b> {tag}'
         if not reply_to or reply_to.from_user.is_bot:
             cc += f'\n<b>UID: </b><code>{message.from_user.id}</code>'
         else:
