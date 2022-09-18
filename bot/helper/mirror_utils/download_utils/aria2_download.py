@@ -18,7 +18,7 @@ def __onDownloadStarted(api, gid):
         if dl := getDownloadByGid(gid):
             listener = dl.listener()
             if listener.select:
-                metamsg = f"ℹ️ {listener.tag} Downloading Metadata, tunggu sebentar. Gunakan file .torrent untuk menghindari proses ini."
+                metamsg = f"ℹ️ {listener.tag} Downloading Metadata, wait then you can select files. Use torrent file to avoid this wait."
                 meta = sendMessage(metamsg, listener.bot, listener.message)
                 while True:
                     if download.is_removed or download.followed_by_ids:
@@ -86,7 +86,7 @@ def __onDownloadComplete(api, gid):
             if BASE_URL is not None and listener.select:
                 api.client.force_pause(new_gid)
                 SBUTTONS = bt_selection_buttons(new_gid)
-                msg = f"⛔️ {listener.tag} Download kamu dijeda. Silahkan pilih file kemudian tekan tombol Selesai Memilih untuk memulai download."
+                msg = f"{listener.tag} Your download paused. Choose files then press Done Selecting button to start downloading."
                 sendMarkup(msg, listener.bot, listener.message, SBUTTONS)
     elif download.is_torrent:
         sleep(2)
@@ -139,7 +139,7 @@ def __onBtDownloadComplete(api, gid):
                     if _ratio and size * float(_ratio) <= limit:
                         pass
                     else:
-                        listener.onUploadError(f"Seeding torrent limit {SEED_LIMIT} GB. Ukuran File/folder yang akan di seeding adalah {get_readable_file_size(size)}")
+                        listener.onUploadError(f"Seeding torrent limit is {SEED_LIMIT} GB. The size of the file/folder to be seeded is {get_readable_file_size(size)}")
                         api.remove([download], force=True, files=True)
                         return
             with download_dict_lock:
@@ -165,7 +165,7 @@ def __onDownloadStopped(api, gid):
     sleep(6)
     if dl := getDownloadByGid(gid):
         download = api.get_download(gid)
-        dl.listener().onDownloadError(f'<code>{download.name.replace("[METADATA]","")}</code> adalah <b><u>Dead torrent</u></b>')
+        dl.listener().onDownloadError(f'<code>{download.name.replace("[METADATA]","")}</code> is <b><u>dead torrent</u></b>')
 
 @new_thread
 def __onDownloadError(api, gid):
@@ -178,7 +178,7 @@ def __onDownloadError(api, gid):
     except:
         pass
     if dl := getDownloadByGid(gid):
-        dl.listener().onDownloadError(f"Oops terjadi error atau sepertinya link kamu bukan direct link.\n\n<code>aria2_onDownload_error: {error}</code>")
+        dl.listener().onDownloadError(f"Error occurred or it looks like your link is not a direct link.\n\n<code>aria2_onDownload_error: {error}</code>")
 
 def start_listener():
     aria2.listen_to_notifications(threaded=True,
@@ -210,7 +210,7 @@ def add_aria2c_download(link: str, path, listener, filename, auth, ratio, seed_t
     if download.error_message:
         error = str(download.error_message).replace('<', ' ').replace('>', ' ')
         LOGGER.info(f"Download Error: {error}")
-        return sendMessage(f"⚠️ {listener.tag} Oops terjadi error atau sepertinya link kamu bukan direct link.\n\n<code>aria2_addDownload_error: {error}</code>", listener.bot, listener.message)
+        return sendMessage(f"{listener.tag} Error occurred or it looks like your link is not a direct link.\n\n<code>aria2_addDownload_error: {error}</code>", listener.bot, listener.message)
     with download_dict_lock:
         download_dict[listener.uid] = AriaDownloadStatus(download.gid, listener)
         LOGGER.info(f"Aria2Download started: {download.gid}")
