@@ -20,13 +20,15 @@ from .modules import authorize, list, cancel_mirror, mirror_status, mirror_leech
 
 
 def stats(update, context):
-    botVersion = check_output(["git log -1 --date=format:v%Y.%m.%d --pretty=format:%cd"], shell=True).decode()
+    if ospath.exists('.git'):
+        last_commit = check_output(["git log -1 --date=short --pretty=format:'%cd <b>From</b> %cr'"], shell=True).decode()
+    else:
+        last_commit = 'No UPSTREAM_REPO'
     currentTime = get_readable_time(time() - botStartTime)
     total, used, free, disk = disk_usage('/')
     swap = swap_memory()
     memory = virtual_memory()
-    stats = f'<b>Bot Version:</b> {botVersion}\n'
-            f'<b>Commit Date:</b> {last_commit}\n\n'\
+    stats = f'<b>Commit Date:</b> {last_commit}\n\n'\
             f'<b>Bot Uptime:</b> {get_readable_time(time() - botStartTime)}\n'\
             f'<b>OS Uptime:</b> {get_readable_time(time() - boot_time())}\n\n'\
             f'<b>Total Disk Space:</b> {get_readable_file_size(total)}\n'\
