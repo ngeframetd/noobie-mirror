@@ -247,7 +247,7 @@ class MirrorLeechListener:
                     clean_target(self.newDir)
                 return
         else:
-            msg += f'🏷 <b>Type: </b>{typ}\n'
+            msg += f'<b>Type: </b>{typ}\n'
             if typ == "Folder":
                 msg += f'<b>SubFolders: </b>{folders}\n'
                 msg += f'<b>Files: </b>{files}\n'
