@@ -65,4 +65,4 @@ class ExtractStatus:
         LOGGER.info(f'Cancelling Extract: {self.__name}')
         if self.__listener.suproc is not None:
             self.__listener.suproc.kill()
-        self.__listener.onUploadError('extracting dihentikan oleh user!')
+        self.__listener.onUploadError('Extracting stopped by user!')
