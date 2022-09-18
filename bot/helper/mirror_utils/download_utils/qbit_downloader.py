@@ -45,12 +45,12 @@ class QbDownloader:
                             break
                         elif time() - self.__stalled_time >= 12:
                             self.client.torrents_delete_tags(tags=self.__listener.uid)
-                            msg = f"⚠️ {self.__listener.tag} The Torrent was not added. Report when you see this error"
+                            msg = f"{self.__listener.tag} The Torrent was not added. Report when you see this error"
                             sendMessage(msg, self.__listener.bot, self.__listener.message)
                             self.client.auth_log_out()
                             return
             else:
-                sendMessage(f"⚠️ {self.__listener.tag} unsupported/invalid link.", self.__listener.bot, self.__listener.message)
+                sendMessage(f"{self.__listener.tag} unsupported/invalid link.", self.__listener.bot, self.__listener.message)
                 self.client.auth_log_out()
                 return
             tor_info = tor_info[0]
@@ -63,7 +63,7 @@ class QbDownloader:
             self.__periodic = setInterval(self.POLLING_INTERVAL, self.__qb_listener)
             if BASE_URL is not None and self.__listener.select:
                 if link.startswith('magnet:'):
-                    metamsg = f"ℹ️ {self.__listener.tag} Downloading Metadata, Tunggu sebentar. Gunakan .torrent file untuk menghindari proses ini"
+                    metamsg = f"{self.__listener.tag} Downloading Metadata, wait then you can select files. Use torrent file to avoid this wait."
                     meta = sendMessage(metamsg, self.__listener.bot, self.__listener.message)
                     while True:
                         tor_info = self.client.torrents_info(torrent_hashes=self.ext_hash)
@@ -78,12 +78,12 @@ class QbDownloader:
                             return deleteMessage(self.__listener.bot, meta)
                 self.client.torrents_pause(torrent_hashes=self.ext_hash)
                 SBUTTONS = bt_selection_buttons(self.ext_hash)
-                msg = f"⛔️ {self.__listener.tag} Download kamu dijeda. Pilih file lalu klik \"Selesai Memilih\" untuk memulai download."
+                msg = f"{self.__listener.tag} Your download paused. Choose files then press Done Selecting button to start downloading."
                 sendMarkup(msg, self.__listener.bot, self.__listener.message, SBUTTONS)
             else:
                 sendStatusMessage(self.__listener.message, self.__listener.bot)
         except Exception as e:
-            sendMessage(f"⚠️ {self.__listener.tag} {e}", self.__listener.bot, self.__listener.message)
+            sendMessage(f"{self.__listener.tag} {e}", self.__listener.bot, self.__listener.message)
             self.client.auth_log_out()
 
     def __qb_listener(self):
@@ -111,7 +111,7 @@ class QbDownloader:
                     if limit is not None:
                         LOGGER.info('Checking File/Folder Size...')
                         if size > limit * 1024**3:
-                            fmsg = f"{mssg}.\nUkuran file/folder kamu adalah {get_readable_file_size(size)}"
+                            fmsg = f"{mssg}.\nYour File/Folder Size is {get_readable_file_size(size)}"
                             self.__onDownloadError(fmsg)
                             return
                     self.__sizeChecked = True
@@ -128,7 +128,7 @@ class QbDownloader:
                     if qbname is not None:
                         cap, f_name = GoogleDriveHelper().drive_list(qbname, True)
                         if cap:
-                            self.__onDownloadError(f"<code>{qbname}</code> <b><u>sudah ada di Drive</u></b>", listfile=f_name)
+                            self.__onDownloadError(f"<code>{qbname}</code> <b><u>already in Drive</u></b>", listfile=f_name)
                             return
                     self.__stopDup_check = True
             elif tor_info.state == "stalledDL":
@@ -140,7 +140,7 @@ class QbDownloader:
                     self.client.torrents_recheck(torrent_hashes=self.ext_hash)
                     self.__rechecked = True
                 elif TORRENT_TIMEOUT is not None and time() - self.__stalled_time >= TORRENT_TIMEOUT:
-                    self.__onDownloadError(f"<code>{self.__name}</code> adalah <b><u>Dead Torrent</u></b>")
+                    self.__onDownloadError(f"<code>{self.__name}</code> is <b><u>dead torrent</u></b>")
             elif tor_info.state == "missingFiles":
                 self.client.torrents_recheck(torrent_hashes=self.ext_hash)
             elif tor_info.state == "error":
@@ -160,7 +160,7 @@ class QbDownloader:
                             if self._ratio and size * float(self._ratio) <= limit:
                                 pass
                             else:
-                                self.__listener.onUploadError(f"Seeding torrent limit {SEED_LIMIT} GB. Ukuran File/folder yang akan di seeding adalah {get_readable_file_size(size)}")
+                                self.__listener.onUploadError(f"Seeding torrent limit is {SEED_LIMIT} GB. The size of the file/folder to be seeded is {get_readable_file_size(size)}")
                                 self.__remove_torrent()
                                 return
                     with download_dict_lock:
@@ -205,4 +205,4 @@ class QbDownloader:
             LOGGER.info(f"Cancelling Seed: {self.__name}")
             self.client.torrents_pause(torrent_hashes=self.ext_hash)
         else:
-            self.__onDownloadError('Download dibatalkan oleh User!')
+            self.__onDownloadError('Download canceled by user!')
