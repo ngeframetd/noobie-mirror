@@ -115,12 +115,12 @@ def uptobox(url: str) -> str:
                 dl_url = result2['data']['dlLink']
         except Exception as uer:
             LOGGER.info(f"UPTOBOX_ERROR: {uer}")
-            raise DirectDownloadLinkException("ERROR: Tidak dapat mengambil direct link")
+            raise DirectDownloadLinkException("ERROR: Can't get the direct link")
         else:
             if result['message'].lower() not in ['success', 'waiting needed']:
                 if result['message'].lower() == 'you need to wait before requesting a new download link':
                     cooldown = divmod(result['data']['waiting'], 60)
-                    raise DirectDownloadLinkException(f"ERROR: Uptobox sedang limit mohon tunggu {cooldown[0]} menit {cooldown[1]} detik.")
+                    raise DirectDownloadLinkException(f"ERROR: Uptobox is being limited please wait {cooldown[0]} min {cooldown[1]} sec.")
                 else:
                     LOGGER.info(f"UPTOBOX_ERROR: {result}")
                     raise DirectDownloadLinkException(f"ERROR: {result['message']}")
@@ -158,7 +158,7 @@ def zippy_share(url: str) -> str:
                     uri2 = re.findall(r"\+.\"/(.*?)\"", js_script)[0]
                 except Exception as err:
                     LOGGER.error(err)
-                    raise DirectDownloadLinkException("ERROR: Tidak dapat mengambil direct link")
+                    raise DirectDownloadLinkException("ERROR: Can't get the direct link")
     dl_url = f"{base_url}/{uri1}/{int(mtk)}/{uri2}"
     return dl_url
 
@@ -189,7 +189,7 @@ def mediafire(url: str) -> str:
         return dl_url
     except Exception as e:
         LOGGER.error(e)
-        raise DirectDownloadLinkException("ERROR: Tidak dapat mengambil direct link")
+        raise DirectDownloadLinkException("ERROR: Can't get the direct link")
 
 def osdn(url: str) -> str:
     """ OSDN direct link generator """
@@ -219,7 +219,7 @@ def github(url: str) -> str:
     try:
         return download.headers["location"]
     except KeyError:
-        raise DirectDownloadLinkException("ERROR: Tidak dapat mengambil direct link")
+        raise DirectDownloadLinkException("ERROR: Can't get the direct link")
 
 def anonfiles(url: str) -> str:
     """ Anonfiles direct link generator
@@ -272,7 +272,7 @@ def sbembed(link: str) -> str:
         lst_link = [dl_url[i] for i in dl_url]
         return lst_link[count-1]
     except:
-        raise DirectDownloadLinkException("ERROR: Tidak dapat mengambil direct link")
+        raise DirectDownloadLinkException("ERROR: Can't get the direct link")
 
 def onedrive(link: str) -> str:
     """ Onedrive direct link generator
@@ -342,7 +342,7 @@ def fichier(link: str) -> str:
     regex = r"^([http:\/\/|https:\/\/]+)?.*1fichier\.com\/\?.+"
     gan = re.match(regex, link)
     if not gan:
-        raise DirectDownloadLinkException("ERROR: Link yang kamu masukan salah!")
+        raise DirectDownloadLinkException("ERROR: The link you entered is wrong!")
     if "::" in link:
         pswd = link.split("::")[-1]
         url = link.split("::")[-2]
@@ -356,14 +356,14 @@ def fichier(link: str) -> str:
             pw = {"pass": pswd}
             req = requests.post(url, data=pw)
     except:
-        raise DirectDownloadLinkException("ERROR: Server 1fichier sedang down!")
+        raise DirectDownloadLinkException("ERROR: Unable to reach 1fichier server!")
     if req.status_code == 404:
         raise DirectDownloadLinkException("ERROR: File not found/The link you entered is wrong!")
     soup = BeautifulSoup(req.content, 'html.parser')
     if soup.find("a", {"class": "ok btn-general btn-orange"}) is not None:
         dl_url = soup.find("a", {"class": "ok btn-general btn-orange"})["href"]
         if dl_url is None:
-            raise DirectDownloadLinkException("ERROR: Tidak dapat mengambil direct link 1fichier!")
+            raise DirectDownloadLinkException("ERROR: Unable to generate Direct Link 1fichier!")
         else:
             return dl_url
     elif len(soup.find_all("div", {"class": "ct_warn"})) == 3:
@@ -371,28 +371,28 @@ def fichier(link: str) -> str:
         if "you must wait" in str(str_2).lower():
             numbers = [int(word) for word in str(str_2).split() if word.isdigit()]
             if not numbers:
-                raise DirectDownloadLinkException("ERROR: 1fichier sedang limit mohon tunggu beberapa menit.")
+                raise DirectDownloadLinkException("ERROR: 1fichier is on a limit. Please wait a few minutes/hour.")
             else:
-                raise DirectDownloadLinkException(f"ERROR: 1fichier sedang limit mohon tunggu {numbers[0]} menit.")
+                raise DirectDownloadLinkException(f"ERROR: 1fichier is on a limit. Please wait {numbers[0]} minute.")
         elif "protect access" in str(str_2).lower():
-            raise DirectDownloadLinkException(f"ERROR: Link ini memerlukan password!\n\n- Tambahkan tanda <b>::</b> setelah link dan ketik password setelah tanda tersebut.\n\n<b>Contoh:</b>\n<code>/{BotCommands.MirrorCommand[0]} https://1fichier.com/?smmtd8twfpm66awbqz04::love you</code>\n\n* Tanpa spasi diantara link dan password <b>::</b>\n* Tapi password bisa memakai spasi")
+            raise DirectDownloadLinkException(f"ERROR: This link requires a password!\n\n<b>This link requires a password!</b>\n- Insert sign <b>::</b> after the link and write the password after the sign.\n\n<b>Example:</b> https://1fichier.com/?smmtd8twfpm66awbqz04::love you\n\n* No spaces between the signs <b>::</b>\n* For the password, you can use a space!")
         else:
-            raise DirectDownloadLinkException("ERROR: Gagal ketika generate direct link 1fichier!")
+            raise DirectDownloadLinkException("ERROR: Failed to generate Direct Link from 1fichier!")
     elif len(soup.find_all("div", {"class": "ct_warn"})) == 4:
         str_1 = soup.find_all("div", {"class": "ct_warn"})[-2]
         str_3 = soup.find_all("div", {"class": "ct_warn"})[-1]
         if "you must wait" in str(str_1).lower():
             numbers = [int(word) for word in str(str_1).split() if word.isdigit()]
             if not numbers:
-                raise DirectDownloadLinkException("ERROR: 1fichier sedang limit mohon tunggu beberapa menit.")
+                raise DirectDownloadLinkException("ERROR: 1fichier is on a limit. Please wait a few minutes/hour.")
             else:
-                raise DirectDownloadLinkException(f"ERROR: 1fichier sedang limit mohon tunggu {numbers[0]} menit.")
+                raise DirectDownloadLinkException(f"ERROR: 1fichier is on a limit. Please wait {numbers[0]} minute.")
         elif "bad password" in str(str_3).lower():
-            raise DirectDownloadLinkException("ERROR: Password yang kamu masukan salah!")
+            raise DirectDownloadLinkException("ERROR: The password you entered is wrong!")
         else:
-            raise DirectDownloadLinkException("ERROR: Gagal ketika generate direct link 1fichier!")
+            raise DirectDownloadLinkException("ERROR: Error trying to generate Direct Link from 1fichier!")
     else:
-        raise DirectDownloadLinkException("ERROR: Gagal ketika generate direct link 1fichier!")
+        raise DirectDownloadLinkException("ERROR: Error trying to generate Direct Link from 1fichier!")
 
 def solidfiles(url: str) -> str:
     """ Solidfiles direct link generator
@@ -475,7 +475,7 @@ def romsget(url: str) -> str:
         return f"{udl}?attach={prm}"
     except Exception as e:
         LOGGER.error(e)
-        raise DirectDownloadLinkException("ERROR: Tidak dapat mengambil direct link")
+        raise DirectDownloadLinkException("ERROR: Can't get the direct link")
 
 def uploadhaven(url: str) -> str:
     ses = requests.Session()
@@ -497,7 +497,7 @@ def uploadhaven(url: str) -> str:
         return dl_url[0]
     except Exception as e:
         LOGGER.error(e)
-        raise DirectDownloadLinkException("ERROR: Tidak dapat mengambil direct link")
+        raise DirectDownloadLinkException("ERROR: Can't get the direct link")
 
 def wetransfer(url):
     """ WeTransfer direct link generator
@@ -507,18 +507,18 @@ def wetransfer(url):
         client = cloudscraper.create_scraper(allow_brotli=False)
         resp = client.get(url)
         if resp.status_code == 404:
-            raise DirectDownloadLinkException("ERROR: File tidak ditemukan atau link yang kamu masukan salah!")
+            raise DirectDownloadLinkException("ERROR: File not found/The link you entered is wrong!")
         try:
             resp = client.post(api, json={"type": "wetransfer", "url": url})
             res = resp.json()
         except BaseException:
-            raise DirectDownloadLinkException("ERROR: Server API sedang down atau link yang kamu masukan salah!")
+            raise DirectDownloadLinkException("ERROR: The API server is down/The link you entered is wrong!")
         if res["success"] is True:
             return res["url"]
         else:
             raise DirectDownloadLinkException(f"ERROR: {res['msg']}")
     except Exception as err:
-        raise DirectDownloadLinkException("ERROR: Tidak dapat mengambil direct link")
+        raise DirectDownloadLinkException("ERROR: Can't get the direct link")
 
 def gdtot(url: str) -> str:
     """ Gdtot google drive link generator
@@ -537,7 +537,7 @@ def gdtot(url: str) -> str:
     try:
         decoded_id = b64decode(str(matches[0])).decode('utf-8')
     except:
-        raise DirectDownloadLinkException("ERROR: Coba di browser kamu, kemungkinan file sudah tidak ada atau sudah mencapai limit harian!")
+        raise DirectDownloadLinkException("ERROR: Try it in your browser, maybe the file doesn't exist or has reached the daily limit!")
     return f'https://drive.google.com/open?id={decoded_id}'
 
 def sharerpw(url: str, forced_login=False) -> str:
@@ -577,9 +577,9 @@ def sharerpw(url: str, forced_login=False) -> str:
                 # retry download via login
                 return sharerpw(url, forced_login=True)
             else:
-                raise DirectDownloadLinkException("ERROR: Tidak dapat mengambil direct link")
+                raise DirectDownloadLinkException("ERROR: Can't get the direct link")
     except:
-        raise DirectDownloadLinkException("ERROR: Tidak dapat mengambil direct link. Kemungkinan file sudah tidak ada")
+        raise DirectDownloadLinkException("ERROR: Can't get the direct link. File not found.")
 
 
 def account_login(client, url, email, password):
