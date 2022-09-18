@@ -174,7 +174,7 @@ def _mirror_leech(bot, message, isZip=False, extract=False, isQbit=False, isLeec
                 if check_ != None:
                     deleteMessage(bot, check_); check_ = None
                 if str(e).startswith('ERROR:'):
-                    return sendMessage(f"⚠️ {tag} {e}", bot, message)
+                    return sendMessage(f"{tag} {e}", bot, message)
 
     if check_ != None:
         deleteMessage(bot, check_); check_ = None
@@ -182,9 +182,9 @@ def _mirror_leech(bot, message, isZip=False, extract=False, isQbit=False, isLeec
 
     if is_gdrive_link(link):
         if not isZip and not extract and not isLeech:
-            gmsg = f"Gunakan /{BotCommands.CloneCommand} untuk menyalin Gdrive/gdtot/appdrive/sharepw file\n\n"
-            gmsg += f"Gunakan /{BotCommands.ZipMirrorCommand[0]} untuk mengarsip file Gdrive/gdtot/appdrive/sharepw\n\n"
-            gmsg += f"Gunakan /{BotCommands.UnzipMirrorCommand[0]} untuk mengekstraks file Gdrive/gdtot/appdrive/sharepw"
+            gmsg = f"Use /{BotCommands.CloneCommand} to clone Google Drive file/folder\n\n"
+            gmsg += f"Use /{BotCommands.ZipMirrorCommand[0]} to make zip of Google Drive folder\n\n"
+            gmsg += f"Use /{BotCommands.UnzipMirrorCommand[0]} to extracts Google Drive archive folder/file"
             smsg = sendMessage(gmsg, bot, message)
             Thread(target=auto_delete_message, args=(bot, message, smsg)).start()
         else:
