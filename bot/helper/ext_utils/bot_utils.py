@@ -231,9 +231,9 @@ def get_readable_time(seconds: int) -> str:
     (minutes, seconds) = divmod(remainder, 60)
     minutes = int(minutes)
     if minutes != 0:
-        result += f'{minutes} menit '
+        result += f'{minutes} min '
     seconds = int(seconds)
-    result += f'{seconds} detik '
+    result += f'{seconds} sec '
     return result
 
 def is_url(url: str):
