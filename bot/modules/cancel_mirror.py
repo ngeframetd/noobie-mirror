@@ -17,7 +17,7 @@ def cancel_mirror(update, context):
         gid = context.args[0]
         dl = getDownloadByGid(gid)
         if not dl:
-            sendMessage(f"ℹ️ {tag} GID: <code>{gid}</code> Tidak Ditemukan.", context.bot, update.message)
+            sendMessage(f"GID: <code>{gid}</code> Not Found.", context.bot, update.message)
             return
     elif update.message.reply_to_message:
         mirror_message = update.message.reply_to_message
@@ -27,16 +27,17 @@ def cancel_mirror(update, context):
             else:
                 dl = None
         if not dl:
-            sendMessage(f"⚠️ {tag} Task ini sudah tidak aktif!", context.bot, update.message)
+            sendMessage(f"This is not an active task!", context.bot, update.message)
             return
     elif len(context.args) == 0:
-        msg = f"ℹ️ {tag} Balas ke perintah saat memirror atau Ketik <code>/{BotCommands.CancelMirror} Download ID</code> untuk membatalkan mirror tersebut!"
+        msg = f"Reply to an active Command message which was used to start the download" \
+              f" or send <code>/{BotCommands.CancelMirror} GID</code> to cancel it!"
         smsg = sendMessage(msg, context.bot, update.message)
         Thread(target=auto_delete_message, args=(context.bot, update.message, smsg)).start()
         return
 
     if OWNER_ID != user_id and dl.message.from_user.id != user_id and user_id not in SUDO_USERS:
-        sendMessage("⚠️ Task ini bukan buat elu!", context.bot, update.message)
+        sendMessage("This task is not for you!", context.bot, update.message)
         return
 
     dl.download().cancel_download()
