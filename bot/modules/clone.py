@@ -111,14 +111,14 @@ def _clone(message, bot):
                 pass
         if _msg:
             deleteMessage(bot, _msg)
-        cc = f'\n⏱ <b>Selesai Dalam: </b>{get_readable_time(time() - message.date.timestamp())}'
-        cc += f'\n\n👤 <b>Pemirror: </b>{tag}'
+        cc = f'\n\n<b>Time:</b> {get_readable_time(time() - message.date.timestamp())}'
+        cc += f'\n\n: </b>{tag}'
         if not reply_to or reply_to.from_user.is_bot:
-            cc += f'\n#️⃣ <b>UID: </b><code>{message.from_user.id}</code>'
+            cc += f'\n<b>UID: </b><code>{message.from_user.id}</code>'
         else:
-            cc += f'\n#️⃣ <b>UID: </b><code>{reply_to.from_user.id}</code>'
+            cc += f'\n<b>UID: </b><code>{reply_to.from_user.id}</code>'
         if button in ["cancelled", ""]:
-            sendMessage(f"⚠️ {tag} {result}", bot, message)
+            sendMessage(f"{tag} {result}", bot, message)
         else:
             sendMarkup(result + cc, bot, message, button)
             LOGGER.info(f'Cloning Done: {name}')
@@ -127,7 +127,7 @@ def _clone(message, bot):
     else:
         if _msg:
             deleteMessage(bot, _msg)
-        smsg = sendMessage(f'ℹ️ Ketik Gdrive/gdtot/appdrive/sharerpw link yang mau di-mirror.', bot, message)
+        smsg = sendMessage(f'Send Gdrive link along with command or by replying to the link by command.', bot, message)
         Thread(target=auto_delete_message, args=(bot, message, smsg)).start()
 
 @new_thread
