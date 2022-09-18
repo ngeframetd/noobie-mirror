@@ -62,7 +62,7 @@ def get_readable_file_size(size_in_bytes) -> str:
     try:
         return f'{round(size_in_bytes, 2)}{SIZE_UNITS[index]}'
     except IndexError:
-        return 'File terlalu besar'
+        return 'File is too big'
 
 def getDownloadByGid(gid):
     with download_dict_lock:
@@ -94,11 +94,11 @@ def bt_selection_buttons(id_: str):
 
     buttons = ButtonMaker()
     if WEB_PINCODE:
-        buttons.buildbutton("Pilih Files", f"{BASE_URL}/app/files/{id_}")
+        buttons.buildbutton("Choose Files", f"{BASE_URL}/app/files/{id_}")
         buttons.sbutton("Pincode", f"btsel pin {gid} {pincode}")
     else:
-        buttons.buildbutton("Pilih Files", f"{BASE_URL}/app/files/{id_}?pin_code={pincode}")
-    buttons.sbutton("Selesai Memilih", f"btsel done {gid} {id_}")
+        buttons.buildbutton("Choose Files", f"{BASE_URL}/app/files/{id_}?pin_code={pincode}")
+    buttons.sbutton("Done Selecting", f"btsel done {gid} {id_}")
     return buttons.build_menu(2)
 
 def get_progress_bar_string(status):
