@@ -162,7 +162,6 @@ def get_readable_message():
                 break
         if len(msg) == 0:
             return None, None
-        msg += f"<b>Tasks:</b> {tasks}"
         dl_speed = 0
         up_speed = 0
         for download in list(download_dict.values()):
