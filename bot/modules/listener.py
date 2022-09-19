@@ -225,7 +225,7 @@ class MirrorLeechListener:
             if typ != 0:
                 msg += f'<b>Corrupted Files: </b>{typ}\n'
             msg += f'<b>Finished in: </b>{get_readable_time(time() - self.message.date.timestamp())}\n\n'
-            msg += f'<b>Leecher: </b>{self.tag}\n'
+            msg += f'<b>cc: </b>{self.tag}\n'
             if not reply_to or reply_to.from_user.is_bot:
                 msg += f'<b>UID: </b><code>{self.message.from_user.id}</code>\n\n'
             else:
